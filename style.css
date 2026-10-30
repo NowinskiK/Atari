@@ -63,3 +63,13 @@ kbd {
 	border-bottom-width: 2px; border-radius: 4px; background: var(--panel);
 }
 footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }
+a#back { display: inline-block; text-decoration: none; }
+.changelog {
+	margin-top: 20px; padding: 24px 28px; overflow-wrap: anywhere;
+	background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+}
+.changelog h1, .changelog h2, .changelog h3 { color: var(--accent); }
+.changelog h2 { padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.changelog h3 { font-size: 1rem; margin: 16px 0 4px; }
+.changelog ul { margin: 0 0 12px; padding-left: 20px; }
+.changelog li { margin-bottom: 4px; }

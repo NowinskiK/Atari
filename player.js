@@ -202,6 +202,9 @@ async function startAudio() {
 	}
 }
 
+// a game opened by a link starts without a click: the browser keeps the sound off until the first one
+for (const type of ["pointerdown", "keydown"]) addEventListener(type, () => audio?.context.resume());
+
 function sample(level) {
 	acc += level; accN++;
 	if (++phase < cyclesPerSample) return;
@@ -260,7 +263,7 @@ function powerOn() {
 
 function runLine() {
 	const m = machine;
-	if (audio) for (let i = 0; i < CYCLES_PER_LINE; i++) { m.cycle(); sample(m.audio); }
+	if (audio?.context.state === "running") for (let i = 0; i < CYCLES_PER_LINE; i++) { m.cycle(); sample(m.audio); }
 	else for (let i = 0; i < CYCLES_PER_LINE; i++) m.cycle();
 	if (m.anticGtia.vcount !== 0) return false;
 	// a frame is complete: convert it and handle the timed OPTION release
@@ -314,7 +317,7 @@ function machineReady() {
 	ready ??= (async () => {
 		await startAudio();
 		const os = await fetchBytes(canvas.dataset.os);
-		machine = new Atari({ xl: true, tvSystem: "pal", os });
+		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
 		last = performance.now();
@@ -375,6 +378,8 @@ async function loadCatalog() {
 	games.push(...list);
 	document.querySelector(".catalog").replaceChildren(...games.map(row), document.getElementById("own-disk"));
 	filter();
+	const game = games.find((g) => g.name === linked);
+	if (game) openGame(game);
 }
 
 // search by name or info: case and Polish letters do not matter ("zolna" finds "Żołna")
@@ -434,7 +439,8 @@ function showCatalog() {
 }
 
 addEventListener("popstate", () => {
-	const game = games.find((g) => g.name === history.state?.game);
+	const name = history.state?.game ?? location.hash.slice(1);   // a #name typed into the address bar has no state
+	const game = games.find((g) => g.name === name);
 	if (game) play(game).catch(showError);
 	else showCatalog();
 });
@@ -443,7 +449,9 @@ document.getElementById("back").addEventListener("click", () => {
 	else showCatalog();
 });
 
-history.replaceState(null, "", location.pathname + location.search);   // a game needs a click to start (sound)
+// a link to #name opens that game; the catalog stays as the page before it, for Back and ← Catalog
+const linked = location.hash.slice(1);
+history.replaceState(null, "", location.pathname + location.search);
 loadCatalog().catch(showError);
 search.focus();
 
