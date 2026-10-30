@@ -1,0 +1,7 @@
+title: Fred
+file: fred.xex                       # disk image (.atr) or executable (.xex) in games/files/
+info: Zeppelin Games / LK Avalon, 1991 · by Mirosław Liminowicz and Janusz Pelc · executable (XEX)
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

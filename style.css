@@ -1,0 +1,64 @@
+:root {
+	--bg: #15171c; --panel: #1f232b; --text: #e6e8ec; --muted: #9aa2b1; --accent: #f0b429; --line: #323845;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+	margin: 0; background: var(--bg); color: var(--text);
+	font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { margin: 0 0 4px; font-size: 1.8rem; }
+h2 { font-size: 1.15rem; margin: 32px 0 8px; }
+p { margin: 0 0 12px; }
+a { color: var(--accent); }
+.sub { color: var(--muted); margin-bottom: 20px; }
+.screen {
+	position: relative; background: #000; border: 1px solid var(--line); border-radius: 6px; overflow: hidden;
+	display: flex; justify-content: center;
+}
+canvas { display: block; width: 100%; max-height: 80vh; object-fit: contain; image-rendering: pixelated; outline: none; }
+[hidden] { display: none !important; }
+.meta { color: var(--muted); font-size: .85rem; margin: 0; }
+#search {
+	width: 100%; font: inherit; padding: 8px 12px; margin-bottom: 12px;
+	background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px;
+}
+#search:focus { outline: none; border-color: var(--accent); }
+.catalog { list-style: none; margin: 0 0 12px; padding: 0; border-top: 1px solid var(--line); }
+.game { display: flex; align-items: center; gap: 16px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.game:hover { background: var(--panel); }
+.game > div { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
+.game .title { font-weight: 600; }
+.game button, #back {
+	flex: none; font: inherit; font-weight: 600; padding: 6px 18px; border: 0; border-radius: 6px;
+	background: var(--accent); color: #1b1300; cursor: pointer;
+}
+.game-head { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.game-head h2 { margin: 0; }
+#back { background: var(--panel); color: var(--text); border: 1px solid var(--line); font-weight: normal; }
+#game-description { margin-top: 12px; }
+#status {
+	position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px;
+	text-align: center; color: var(--muted); pointer-events: none;
+}
+.bar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.bar button, .bar label {
+	display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: .95rem; padding: 6px 14px; border: 1px solid var(--line); border-radius: 6px;
+	background: var(--panel); color: var(--text); cursor: pointer;
+}
+.bar button:disabled, body:not(.running) .bar label { opacity: .4; cursor: default; pointer-events: none; }
+.bar input { display: none; }
+.bar svg {
+	width: 1.05em; height: 1.05em; flex: none;
+	fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+#disk { align-self: center; color: var(--muted); font-size: .9rem; }
+table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+td:first-child { white-space: nowrap; color: var(--muted); width: 1%; }
+kbd {
+	font: .85rem ui-monospace, Consolas, monospace; padding: 1px 6px; border: 1px solid var(--line);
+	border-bottom-width: 2px; border-radius: 4px; background: var(--panel);
+}
+footer { margin-top: 40px; color: var(--muted); font-size: .85rem; }

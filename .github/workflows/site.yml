@@ -1,0 +1,55 @@
+# Publishes the page (the Atari games catalog playable in the browser) to GitHub Pages on every push to main.
+# The repository root is the site: index.html, player.js, style.css, firmware/ and games/ (catalog and game files).
+# See README.md.
+name: Site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'player.js'
+      - 'style.css'
+      - 'games/**'
+      - 'firmware/**'
+      - '.github/workflows/site.yml'
+  workflow_dispatch:
+
+jobs:
+  pages:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      # games with a url: in games/<name>.yml are not in the repository: fetch them into games/files/<file>
+      # (the other site sends no CORS header, so the page cannot load them from there itself)
+      - name: Download games from other sites
+        run: |
+          for f in games/*.yml; do
+            url=$(yq '.url // ""' "$f")
+            [ -n "$url" ] || continue
+            file=$(yq '.file' "$f")
+            echo "$f: $url -> games/files/$file"
+            curl -fsSL --retry 3 -o "games/files/$file" "$url"
+          done
+
+      # .git and .github are left out by the action
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,9 @@
+title: Jaskiniowiec
+file: jaskiniowiec.xex               # disk image (.atr) or executable (.xex) in games/files/
+                                     # (Jaskiniowiec (1995)(StanBit)(PL)[h CAMOsoft][t +1 CAMOsoft].xex)
+info: StanBit, 1995 · by Stanisław Skwiot · CAMOsoft file version with a trainer · executable (XEX)
+description: "Press F2 (START), answer the trainer's “Unlimited lives?” with Y or N, then fire starts the game; F4 (OPTION) switches music / sound effects."
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

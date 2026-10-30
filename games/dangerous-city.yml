@@ -1,0 +1,7 @@
+title: Dangerous City (PL)
+file: DC_2023_1_0_0.xex                 # disk image (.atr) or executable (.xex) in games/files/
+info: PTODT · Kamil Nowinski · executable (XEX)
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game reboots if BASIC is on)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

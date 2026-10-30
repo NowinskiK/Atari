@@ -1,0 +1,8 @@
+title: Misja
+file: misja.xex                      # disk image (.atr) or executable (.xex) in games/files/
+info: Zeppelin Games, 1991 · by Janusz Pelc · executable (XEX)
+description: Mission – lead your soldier with the joystick.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads into $A000)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

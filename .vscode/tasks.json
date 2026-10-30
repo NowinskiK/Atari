@@ -1,0 +1,27 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			// the page needs a web server: modules and fetch do not work from file://
+			"label": "serve site",
+			"type": "process",
+			"command": "py",
+			"args": ["-3", "-u", "-m", "http.server", "8765", "--bind", "127.0.0.1"],
+			"options": { "cwd": "${workspaceFolder}" },
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "http.server",
+				"pattern": { "regexp": "^__no_problems__$" },
+				"background": { "activeBegins": true, "beginsPattern": "^Serving HTTP", "endsPattern": "^Serving HTTP" }
+			}
+		},
+		{
+			"label": "stop site",
+			"command": "${input:terminateServer}",
+			"problemMatcher": []
+		}
+	],
+	"inputs": [
+		{ "id": "terminateServer", "type": "command", "command": "workbench.action.tasks.terminate", "args": "serve site" }
+	]
+}

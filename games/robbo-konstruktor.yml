@@ -1,0 +1,8 @@
+title: Robbo Konstruktor
+file: robbo-konstruktor.atr          # disk image (.atr) or executable (.xex) in games/files/
+info: LK Avalon, 1990 · disk · Polish · fixed version (copy protection off)
+description: "The construction kit for Robbo: build planets, play them and save them as your own game."
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: keys                       # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: []                           # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atari Games</title>
+<meta name="description" content="8-bit Atari games, playable in the browser in an Atari 800XL emulator.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+	<h1>Atari Games</h1>
+
+	<section id="catalog-view">
+		<p class="sub">8-bit Atari games running in an emulator in your browser · pick a game and press <b>Load</b></p>
+		<input id="search" type="search" placeholder="Search by name or info…" aria-label="Search games" autocomplete="off">
+		<ul class="catalog" aria-label="Games"></ul>
+		<p id="catalog-status" class="sub"></p>
+	</section>
+
+	<section id="game-view" hidden>
+		<div class="game-head">
+			<button id="back" type="button">← Catalog</button>
+			<div>
+				<h2 id="game-title"></h2>
+				<p id="game-info" class="meta"></p>
+			</div>
+		</div>
+		<div class="screen">
+			<canvas id="screen" tabindex="0" data-os="firmware/altirraos-xl.rom"></canvas>
+			<div id="status"></div>
+		</div>
+		<div class="bar">
+			<button id="restart" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Restart</button>
+			<button id="save" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Download disk</button>
+			<label><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>Load disk…<input id="load" type="file" accept=".atr,.xex"></label>
+			<button id="blank" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8V3"/><path d="M7 21v-7h10v7"/></svg>Blank disk</button>
+			<button id="fullscreen" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>Full screen</button>
+			<span id="disk"></span>
+		</div>
+		<p id="game-description"></p>
+
+		<div id="game-about" hidden>
+			<h2>About</h2>
+			<div class="about"></div>
+		</div>
+		<h2>Disks</h2>
+		<p>A game runs from a disk image in drive D1: (an executable, <code>.xex</code>, is put on a write-protected
+			boot disk). What you save goes to that image in the browser and is lost when you close or reload the page,
+			so use <b>Download disk</b> to keep it and <b>Load disk…</b> to put it back later. Loading or creating a disk
+			swaps it in D1: like changing a floppy; <b>Restart</b> boots from it. A loaded <code>.xex</code> boots at once.</p>
+
+		<h2>Keys</h2>
+		<table>
+			<tr id="keys-arrows"><td><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td>move (Atari cursor keys)</td></tr>
+			<tr id="keys-fire" hidden><td></td><td>joystick fire</td></tr>
+			<tr><td>numpad <kbd>8</kbd> <kbd>2</kbd> <kbd>4</kbd> <kbd>6</kbd>, <kbd>0</kbd> / right <kbd>Ctrl</kbd></td><td>joystick and its fire button</td></tr>
+			<tr><td>gamepad</td><td>joystick; <kbd>A</kbd>/<kbd>B</kbd> fire, <kbd>Start</kbd> = START, <kbd>Back</kbd> = SELECT</td></tr>
+			<tr><td><kbd>F2</kbd> <kbd>F3</kbd> <kbd>F4</kbd></td><td>START, SELECT, OPTION</td></tr>
+			<tr><td><kbd>F1</kbd></td><td>HELP (help pages)</td></tr>
+			<tr><td><kbd>Space</kbd> <kbd>Enter</kbd> <kbd>Shift</kbd></td><td>Atari keys (fire in Robbo Konstruktor)</td></tr>
+			<tr><td><kbd>Esc</kbd></td><td>ESC (back to the editor / Robbo gives up)</td></tr>
+			<tr><td><kbd>F7</kbd> / <kbd>Pause</kbd></td><td>BREAK</td></tr>
+			<tr><td><kbd>`</kbd> <kbd>[</kbd> <kbd>]</kbd> <kbd>\</kbd> <kbd>'</kbd></td><td>inverse video, <code>&lt;</code>, <code>&gt;</code>, <code>+</code>, <code>*</code></td></tr>
+		</table>
+	</section>
+
+	<footer>
+		<p>Robbo Konstruktor © 1990 Laboratorium Komputerowe Avalon. Fixed version: October 2026 by CAMOsoft.</p>
+		<p>Emulator: <a href="https://github.com/cyco130/sfotty-pie">Sfotty Pie</a> by Fatih Aygün (MIT).
+			Operating system: AltirraOS by Avery Lee, from the <a href="https://www.virtualdub.org/altirra.html">Altirra</a>
+			emulator (<a href="firmware/README.md">licence</a>). Not affiliated with Atari or the authors of these tools.</p>
+	</footer>
+</main>
+<script type="module" src="player.js"></script>
+</body>
+</html>
