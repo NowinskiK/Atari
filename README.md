@@ -1,5 +1,8 @@
 # Atari games in the browser
 
+[![Play in the browser](https://img.shields.io/badge/%E2%96%B6%20Play%20in%20the%20browser-nowinskik.github.io%2FAtari-f0b429?style=for-the-badge)](https://nowinskik.github.io/Atari/)
+[![Site](https://github.com/NowinskiK/Atari/actions/workflows/site.yml/badge.svg)](https://github.com/NowinskiK/Atari/actions/workflows/site.yml)
+
 A static web page with a catalog of 8-bit Atari games, played in an Atari 800XL emulator: the fixed version of
 [Robbo Konstruktor](https://github.com/NowinskiK/lkavalon-atari/tree/main/robbo-konstruktor), Fred, Hans Kloss, Misja and Jaskiniowiec.
 The start page is the catalog: search by name or info, and **Load** on a row hides the list, shows the game's
