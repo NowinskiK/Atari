@@ -247,15 +247,33 @@ function trapFormat(m) {
 	});
 }
 
-// Problem Jasia sets the VBI vector to $C0E2, the handler's address in the real XL OS. In AltirraOS that is the
-// middle of the handler, past the RTCLOK update, so the game hangs at its first wait. Send it to the real start.
-const VVBLKI = 0x222, XL_VBI = 0xC0E2, ALTIRRA_VBI = 0xC00C, NMI_JMP_VBI = 0xC19F;
+// Problem Jasia fills the OS vectors ($200-$225) with a table saved from the real XL OS, and its keyboard IRQ handler
+// ends with JMP $C030 at $014C. Those are ROM addresses of the real OS: in AltirraOS they are the middle of other
+// code, so RTCLOK stops (the game hangs at its first wait) and any key crashes the CPU (see issue #5). Each is
+// changed to AltirraOS's handler: the vectors at every VBI, the jump just before it is used.
+const XL_VECTORS = [                                  // vector, address in the XL OS, address in AltirraOS
+	[0x222, 0xC0E2, 0xC00C],                           // VVBLKI
+	[0x208, 0xFC19, 0xFED5],                           // VKEYBD
+	[0x20A, 0xEB2C, 0xEA49],                           // VSERIN
+	[0x20C, 0xEAAD, 0xEA92],                           // VSEROR
+	[0x20E, 0xEAEC, 0xEACB],                           // VSEROC
+	...[0x202, 0x204, 0x206, 0x210, 0x212, 0x214].map((v) => [v, 0xC0CD, 0xC054]),   // handlers that only return
+];
+const NMI_JMP_VBI = 0xC19F, GAME_IRQ_JMP = 0x14C, JMP = 0x4C, XL_IRQ = 0xC030, ALTIRRA_IRQ = 0xC1DE;
 
-function trapXlVbi(m) {
+function trapXlOs(m) {
+	const word = (a) => m.mmu.read(a, PEEK) | (m.mmu.read(a + 1, PEEK) << 8);
+	const redirect = (a, from, to) => {
+		if (word(a) !== from) return;
+		m.mmu.write(a, to & 0xFF, 0);
+		m.mmu.write(a + 1, to >> 8, 0);
+	};
 	m.interceptExecute(NMI_JMP_VBI, () => {
-		if (m.mmu.read(VVBLKI, PEEK) !== (XL_VBI & 0xFF) || m.mmu.read(VVBLKI + 1, PEEK) !== XL_VBI >> 8) return undefined;
-		m.mmu.write(VVBLKI, ALTIRRA_VBI & 0xFF, 0);
-		m.mmu.write(VVBLKI + 1, ALTIRRA_VBI >> 8, 0);
+		for (const [vector, xl, altirra] of XL_VECTORS) redirect(vector, xl, altirra);
+		return undefined;
+	});
+	m.interceptExecute(GAME_IRQ_JMP, () => {
+		if (m.mmu.read(GAME_IRQ_JMP, PEEK) === JMP) redirect(GAME_IRQ_JMP + 1, XL_IRQ, ALTIRRA_IRQ);
 		return undefined;
 	});
 }
@@ -333,7 +351,7 @@ function machineReady() {
 		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
-		trapXlVbi(machine);
+		trapXlOs(machine);
 		last = performance.now();
 		step();
 		requestAnimationFrame(present);

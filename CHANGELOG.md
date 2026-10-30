@@ -10,7 +10,7 @@ Unreleased, and give that section the date when it reaches main. -->
 
 ### Fixed
 
-- Problem Jasia froze after pressing START: it uses the real XL OS address of the vertical blank handler, which is the middle of that handler in AltirraOS.
+- Problem Jasia froze after pressing START, and any key crashed it during play: it uses addresses from the real XL OS, which point to other code in AltirraOS.
 
 ## 2026-10-30
 
