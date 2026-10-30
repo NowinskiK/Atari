@@ -14,7 +14,12 @@
 	<section id="catalog-view">
 		<p class="sub">8-bit Atari games running in an emulator in your browser · pick a game and press <b>Load</b></p>
 		<input id="search" type="search" placeholder="Search by name or info…" aria-label="Search games" autocomplete="off">
-		<ul class="catalog" aria-label="Games"></ul>
+		<ul class="catalog" aria-label="Games">
+			<li id="own-disk" class="game">
+				<div><span class="title">Game not found?</span><span class="meta">Load an .atr or .xex file from your computer</span></div>
+				<label>Load disk…<input id="load-catalog" type="file" accept=".atr,.xex"></label>
+			</li>
+		</ul>
 		<p id="catalog-status" class="sub"></p>
 	</section>
 
@@ -66,10 +71,9 @@
 	</section>
 
 	<footer>
-		<p>Robbo Konstruktor © 1990 Laboratorium Komputerowe Avalon. Fixed version: October 2026 by CAMOsoft.</p>
 		<p>Emulator: <a href="https://github.com/cyco130/sfotty-pie">Sfotty Pie</a> by Fatih Aygün (MIT).
 			Operating system: AltirraOS by Avery Lee, from the <a href="https://www.virtualdub.org/altirra.html">Altirra</a>
-			emulator (<a href="firmware/README.md">licence</a>). Not affiliated with Atari or the authors of these tools.</p>
+			emulator (<a href="firmware/README.md">licence</a>). <br/> Not affiliated with Atari or the authors of these tools.</p>
 	</footer>
 </main>
 <script type="module" src="player.js"></script>

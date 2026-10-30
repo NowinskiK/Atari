@@ -1,0 +1,8 @@
+title: Robbo NK
+file: Robbo NK (PL).xex        # disk image (.atr) or executable (.xex) in games/files/
+info: by Kamil, Hubert and Henryk Nowiński · part 1, before mid-1993 · Polish · executable (XEX)
+description: Robbo with 34 new planets, built with Robbo Konstruktor by the Nowiński family.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads up to $BFFF)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

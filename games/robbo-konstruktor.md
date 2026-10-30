@@ -7,3 +7,5 @@ and the reverse-engineered source code.
 
 Saving a stand-alone game ("zapisz Robbo") formats the disk first. Press **Blank disk** before you save it, then
 **Download disk**: the downloaded file boots straight into your game.
+
+Robbo Konstruktor © 1990 Laboratorium Komputerowe Avalon. Fixed version: October 2026 by CAMOsoft.
