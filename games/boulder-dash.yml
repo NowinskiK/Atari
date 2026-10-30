@@ -1,0 +1,9 @@
+title: Boulder Dash
+file: boulder-dash.atr               # disk image (.atr) or executable (.xex) in games/files/
+                                     # (Boulder Dash (1984)(First Star Software)(US).atr)
+info: First Star Software, 1984 · disk (ATR)
+description: Dig through the caves as Rockford, collect enough diamonds and reach the exit before time runs out – mind the falling boulders. Fire starts the game.
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

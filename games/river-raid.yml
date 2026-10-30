@@ -1,0 +1,9 @@
+title: River Raid
+file: river-raid.xex                 # disk image (.atr) or executable (.xex) in games/files/
+                                     # (River Raid (1983)(Activision)(US).xex)
+info: Activision, 1983 · executable (XEX)
+description: Fly up the river, shoot ships, helicopters, jets and bridges, and refuel over fuel depots.
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)
