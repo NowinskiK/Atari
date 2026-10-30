@@ -1,6 +1,6 @@
 title: Problem Jasia 2
 file: problem-jasia-2.atr                       # disk image (.atr) or executable (.xex) in games/files/
-info: 
+info: Mirage Software, 1994 · Cover by CAMOsoft · disk (ATR)
 basic: false                         # false = OPTION is held at power-on, BASIC off
 controls:
   arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
