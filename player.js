@@ -88,6 +88,14 @@ function release(c) {
 	apply(c, false);
 }
 
+// Atari Ctrl = left Ctrl, or a PC arrow without Shift: the OS ignores most Ctrl + Shift keys, so Shift + arrow
+// (fire in the Robbo games) has to reach the Atari as Shift + the plain arrow key
+function syncCtrl(kb) {
+	const shift = held.has("ShiftLeft") || held.has("ShiftRight");
+	if (held.has("ControlLeft") || (ctrlArrows && !shift)) kb.pressMetaKey(KEYBOARD_LINES.CONTROL);
+	else kb.releaseMetaKey(KEYBOARD_LINES.CONTROL);
+}
+
 function apply(c, down) {
 	const kb = machine.keyboard;
 	if (isFire(c)) kbFire = [...held].some(isFire);
@@ -95,13 +103,14 @@ function apply(c, down) {
 	else if (c in SCAN) down ? kb.pressKey(SCAN[c]) : kb.releaseKey(SCAN[c]);
 	else if (c in ARROWS) {
 		ctrlArrows += down ? 1 : -1;
-		if (down) { kb.pressMetaKey(KEYBOARD_LINES.CONTROL); kb.pressKey(ARROWS[c]); }
-		else {
-			kb.releaseKey(ARROWS[c]);
-			if (!ctrlArrows && !held.has("ControlLeft")) kb.releaseMetaKey(KEYBOARD_LINES.CONTROL);
-		}
+		if (down) { syncCtrl(kb); kb.pressKey(ARROWS[c]); }
+		else { kb.releaseKey(ARROWS[c]); syncCtrl(kb); }
 	}
-	else if (c in META) down ? kb.pressMetaKey(META[c]) : kb.releaseMetaKey(META[c]);
+	else if (META[c] === KEYBOARD_LINES.CONTROL) syncCtrl(kb);
+	else if (c in META) {
+		down ? kb.pressMetaKey(META[c]) : kb.releaseMetaKey(META[c]);
+		if (META[c] === KEYBOARD_LINES.SHIFT) syncCtrl(kb);
+	}
 	else if (c in CONSOLE) machine.console[CONSOLE[c]] = down;
 }
 
