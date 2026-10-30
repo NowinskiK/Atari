@@ -6,6 +6,12 @@ Notable changes to the site, the player and the game catalog.
 published on every push to main, so entries are grouped by date instead of version numbers: add new entries under
 Unreleased, and give that section the date when it reaches main. -->
 
+## Unreleased
+
+### Fixed
+
+- Problem Jasia froze after pressing START: it uses the real XL OS address of the vertical blank handler, which is the middle of that handler in AltirraOS.
+
 ## 2026-10-30
 
 ### Added

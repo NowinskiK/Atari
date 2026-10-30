@@ -247,6 +247,19 @@ function trapFormat(m) {
 	});
 }
 
+// Problem Jasia sets the VBI vector to $C0E2, the handler's address in the real XL OS. In AltirraOS that is the
+// middle of the handler, past the RTCLOK update, so the game hangs at its first wait. Send it to the real start.
+const VVBLKI = 0x222, XL_VBI = 0xC0E2, ALTIRRA_VBI = 0xC00C, NMI_JMP_VBI = 0xC19F;
+
+function trapXlVbi(m) {
+	m.interceptExecute(NMI_JMP_VBI, () => {
+		if (m.mmu.read(VVBLKI, PEEK) !== (XL_VBI & 0xFF) || m.mmu.read(VVBLKI + 1, PEEK) !== XL_VBI >> 8) return undefined;
+		m.mmu.write(VVBLKI, ALTIRRA_VBI & 0xFF, 0);
+		m.mmu.write(VVBLKI + 1, ALTIRRA_VBI >> 8, 0);
+		return undefined;
+	});
+}
+
 // an empty single-density disk: ATR header ($0296, 720 x 128 bytes in 16-byte paragraphs) + zeros
 function blankDisk() {
 	const atr = new Uint8Array(16 + 720 * 128);
@@ -320,6 +333,7 @@ function machineReady() {
 		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
+		trapXlVbi(machine);
 		last = performance.now();
 		step();
 		requestAnimationFrame(present);
