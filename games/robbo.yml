@@ -1,0 +1,8 @@
+title: Robbo
+file: robbo.xex                      # disk image (.atr) or executable (.xex) in games/files/
+info: LK Avalon, 1989 · by Janusz Pelc · executable (XEX)
+description: Guide the little robot through 56 planets – collect the screws, then reach the escape capsule.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads up to $B7FF)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

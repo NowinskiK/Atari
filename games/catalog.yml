@@ -1,10 +1,14 @@
 # The games in the catalog, in this order. Each name has its settings in games/<name>.yml.
+- robbo-demo
+- robbo
 - robbo-konstruktor
+- robbo-nk
 - fred
 - hans-kloss
 - misja
 - jaskiniowiec
 - digi-duck
 - dangerous-city
+- dangerous-city-en
 - river-raid
 - boulder-dash

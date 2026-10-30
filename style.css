@@ -30,10 +30,11 @@ canvas { display: block; width: 100%; max-height: 80vh; object-fit: contain; ima
 .game:hover { background: var(--panel); }
 .game > div { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
 .game .title { font-weight: 600; }
-.game button, #back {
+.game button, .game label, #back {
 	flex: none; font: inherit; font-weight: 600; padding: 6px 18px; border: 0; border-radius: 6px;
 	background: var(--accent); color: #1b1300; cursor: pointer;
 }
+.game input { display: none; }
 .game-head { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
 .game-head h2 { margin: 0; }
 #back { background: var(--panel); color: var(--text); border: 1px solid var(--line); font-weight: normal; }

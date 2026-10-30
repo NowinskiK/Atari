@@ -17,7 +17,8 @@
 		},
 		{
 			"label": "stop site",
-			"command": "${input:terminateServer}",
+			"type": "shell",
+			"command": "echo ${input:terminateServer}",
 			"problemMatcher": []
 		}
 	],

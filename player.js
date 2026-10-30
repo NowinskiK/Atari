@@ -352,7 +352,7 @@ function row(game) {
 	const info = el("div");
 	info.append(el("span", "title", game.title));
 	if (game.info) info.append(el("span", "meta", game.info));
-	const button = el("button", "", "▶ Load");
+	const button = el("button", "", "▶ Run");
 	button.type = "button";
 	button.addEventListener("click", () => openGame(game));
 	game.row = el("li", "game");
@@ -364,7 +364,7 @@ async function loadCatalog() {
 	const names = parseYaml(await fetchText("games/catalog.yml"));
 	const list = await Promise.all(names.map(async (name) => ({ name, ...parseYaml(await fetchText(`games/${name}.yml`)) })));
 	games.push(...list);
-	document.querySelector(".catalog").replaceChildren(...games.map(row));
+	document.querySelector(".catalog").replaceChildren(...games.map(row), document.getElementById("own-disk"));
 	filter();
 }
 
@@ -448,18 +448,23 @@ document.getElementById("save").addEventListener("click", () => {
 	setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 	canvas.focus();
 });
-document.getElementById("load").addEventListener("change", async (e) => {
+async function loadDisk(e) {
 	const file = e.target.files[0];
 	if (!file) return;
 	const bytes = new Uint8Array(await file.arrayBuffer());
+	const fromCatalog = gameView.hidden;                      // nothing is running there: the disk has to boot
+	if (fromCatalog) history.pushState({ game: file.name }, "", "#disk");
+	showGame({ title: file.name });
+	await machineReady();
 	setControls();                                            // a disk of your own: the default controls
 	basicOff = true;
-	showGame({ title: file.name });
 	insert(bytes, file.name);
-	if (bytes[0] === 0xFF && bytes[1] === 0xFF) powerOn();   // an executable only runs when booted
+	if (fromCatalog || (bytes[0] === 0xFF && bytes[1] === 0xFF)) powerOn();   // an executable only runs when booted
+	document.body.classList.add("running");
 	e.target.value = "";
 	canvas.focus();
-});
+}
+for (const id of ["load", "load-catalog"]) document.getElementById(id).addEventListener("change", (e) => loadDisk(e).catch(showError));
 document.getElementById("blank").addEventListener("click", () => {
 	insert(blankDisk(), "blank.atr");
 	canvas.focus();

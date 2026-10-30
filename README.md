@@ -69,7 +69,7 @@ rendered with [marked](https://marked.js.org/) 12.0.2 from jsDelivr), e.g.
 [games/robbo-konstruktor.md](games/robbo-konstruktor.md).
 
 Right Ctrl, numpad 0 and the numpad 8 / 2 / 4 / 6 joystick work in every game. A disk loaded with **Load disk…**
-gets the default controls (`arrows: keys`, BASIC off).
+(on a game's page, or at the end of the catalog) gets the default controls (`arrows: keys`, BASIC off).
 
 To update the Robbo disk, copy a new build of the fixed version from lkavalon-atari over
 `games/files/robbo-konstruktor.atr` (keep this name: the catalog loads it, and **Download disk** uses it as the file name).
