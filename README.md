@@ -64,6 +64,9 @@ add `url:` with the download link next to `file:`. The workflow downloads it int
 [.gitignore](.gitignore); to run locally, download the file once yourself, e.g.
 `curl -fsSL -o games/files/saper.atr "<url>"`.
 
+A link to `#<name>` (for example `…/#problem-jasia`) opens that game and runs it at once. Browsers keep the sound off
+until the first click or key press on the page.
+
 For a longer text, add `games/<name>.md`: when it exists, the game's page shows it as **About** (Markdown,
 rendered with [marked](https://marked.js.org/) 12.0.2 from jsDelivr), e.g.
 [games/robbo-konstruktor.md](games/robbo-konstruktor.md).
