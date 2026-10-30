@@ -1,6 +1,6 @@
 # Atari games in the browser
 
-[![Play in the browser](https://img.shields.io/badge/Play_in_the_browser-Atari_800XL-f0b429?style=for-the-badge&logo=atari&logoColor=white)](https://nowinskik.github.io/Atari/)
+[![Play in the browser](.github/play-button.svg)](https://nowinskik.github.io/Atari/)
 [![Site](https://github.com/NowinskiK/Atari/actions/workflows/site.yml/badge.svg)](https://github.com/NowinskiK/Atari/actions/workflows/site.yml)
 
 A static web page with a catalog of 8-bit Atari games, played in an Atari 800XL emulator: the fixed version of

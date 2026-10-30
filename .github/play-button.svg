@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="40" viewBox="0 0 256 40" role="img" aria-label="Play in the browser">
+	<title>Play in the browser</title>
+	<rect width="256" height="40" rx="6" fill="#f0b429"/>
+	<!-- Atari logo from Simple Icons (CC0), 24 x 24 -->
+	<path transform="translate(12 8)" fill="#1b1300" d="M0 21.653s3.154-.355 5.612-2.384c2.339-1.930 3.185-3.592 3.770-5.476.584-1.885.671-6.419.671-7.764V2.346H8.598v1.365c-.024 2.041-.2 5.918-1.135 8.444C5.203 18.242 0 18.775 0 18.775zm24 0s-3.154-.355-5.610-2.384c-2.342-1.930-3.187-3.592-3.772-5.476-.583-1.885-.671-6.419-.671-7.764V2.346H15.400l.001 1.365c.024 2.041.202 5.918 1.138 8.444 2.258 6.087 7.460 6.620 7.460 6.620zM10.659 2.348h2.685v19.306H10.660Z"/>
+	<path d="M46 13 L56 20 L46 27 Z" fill="#1b1300"/>
+	<text x="64" y="26" fill="#1b1300" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="700">Play in the browser</text>
+</svg>
