@@ -11,6 +11,7 @@ Unreleased, and give that section the date when it reaches main. -->
 ### Fixed
 
 - Problem Jasia froze after pressing START, and any key crashed it during play: it uses addresses from the real XL OS, which point to other code in AltirraOS.
+- Problem Jasia 2 crashed after its intro: it reads its disk through an address in the real XL OS that is empty in AltirraOS.
 
 ## 2026-10-30
 

@@ -247,6 +247,37 @@ function trapFormat(m) {
 	});
 }
 
+// Problem Jasia 2 reads and writes its disk through JMP $C6C4, the middle of DSKINV in the real XL OS, with the
+// command, buffer and sector already set. In AltirraOS that address is empty ROM, so nothing is read and the CPU
+// slides on until it meets a stray RTS, which breaks the stack. The sector is served here instead.
+const XL_DSKINV_IO = 0xC6C4, EMPTY_ROM = 0xFF, DAUX1 = 0x30A, CMD_READ = 0x52, CMD_WRITE = 0x57, CMD_PUT = 0x50;
+
+function trapXlDskinv(m) {
+	m.interceptExecute(XL_DSKINV_IO, () => {
+		const peek = (a) => m.mmu.read(a, PEEK);
+		if (peek(XL_DSKINV_IO) !== EMPTY_ROM || !disk) return undefined;
+		const cmd = peek(DCOMND);
+		const buf = peek(DBUFLO) | (peek(DBUFLO + 1) << 8);
+		const sector = peek(DAUX1) | (peek(DAUX1 + 1) << 8);
+		let status = 0x90;                                 // device error
+		if (cmd === CMD_READ) {
+			const data = disk.readSector(sector);
+			if (data) {
+				data.forEach((b, i) => m.mmu.write((buf + i) & 0xFFFF, b, 0));
+				status = 1;
+			}
+		} else if ((cmd === CMD_WRITE || cmd === CMD_PUT) && !disk.writeProtected) {
+			const data = Array.from({ length: disk.sectorSize }, (_, i) => peek((buf + i) & 0xFFFF));
+			if (disk.writeSector(sector, data)) status = 1;
+		}
+		m.mmu.write(DSTATS, status, 0);
+		m.cpu.Y = status;
+		m.cpu.nFlag = status >= 0x80;
+		m.cpu.zFlag = false;
+		return RTS;
+	});
+}
+
 // Problem Jasia fills the OS vectors ($200-$225) with a table saved from the real XL OS, and its keyboard IRQ handler
 // ends with JMP $C030 at $014C. Those are ROM addresses of the real OS: in AltirraOS they are the middle of other
 // code, so RTCLOK stops (the game hangs at its first wait) and any key crashes the CPU (see issue #5). Each is
@@ -352,6 +383,7 @@ function machineReady() {
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
 		trapXlOs(machine);
+		trapXlDskinv(machine);
 		last = performance.now();
 		step();
 		requestAnimationFrame(present);
