@@ -29,15 +29,17 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
 
       # games with a url: in games/<name>.yml are not in the repository: fetch them into games/files/<file>
       # (the other site sends no CORS header, so the page cannot load them from there itself)
       - name: Download games from other sites
         run: |
-          for f in games/*.yml; do
+          # the games listed in catalog.yml (catalog.yml itself is a list, not a game)
+          for name in $(yq '.[]' games/catalog.yml); do
+            f="games/$name.yml"
             url=$(yq '.url // ""' "$f")
             [ -n "$url" ] || continue
             file=$(yq '.file' "$f")
@@ -45,11 +47,11 @@ jobs:
             curl -fsSL --retry 3 -o "games/files/$file" "$url"
           done
 
-      # .git and .github are left out by the action
-      - uses: actions/upload-pages-artifact@v3
+      # .git, .github and other dotfiles (.gitignore, .vscode) are left out by the action
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: .
 
       - name: Deploy
         id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
