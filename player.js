@@ -317,7 +317,7 @@ function machineReady() {
 	ready ??= (async () => {
 		await startAudio();
 		const os = await fetchBytes(canvas.dataset.os);
-		machine = new Atari({ xl: true, tvSystem: "pal", os });
+		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
 		last = performance.now();

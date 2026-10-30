@@ -1,5 +1,6 @@
 # Publishes the page (the Atari games catalog playable in the browser) to GitHub Pages on every push to main.
-# The repository root is the site: index.html, player.js, style.css, firmware/ and games/ (catalog and game files).
+# The repository root is the site: index.html, player.js, style.css, firmware/, games/ (catalog and game files)
+# and changelog/ (the page that shows CHANGELOG.md).
 # See README.md.
 name: Site
 
@@ -10,6 +11,8 @@ on:
       - 'index.html'
       - 'player.js'
       - 'style.css'
+      - 'CHANGELOG.md'
+      - 'changelog/**'
       - 'games/**'
       - 'firmware/**'
       - '.github/workflows/site.yml'
@@ -46,6 +49,13 @@ jobs:
             echo "$f: $url -> games/files/$file"
             curl -fsSL --retry 3 -o "games/files/$file" "$url"
           done
+
+      # the footer's version: the date of the commit (as in CHANGELOG.md) and a link to it
+      - name: Stamp the version
+        run: |
+          grep -q '<span id="version">dev</span>' index.html
+          version="$(git log -1 --format=%cs) (<a href=\"https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA\">${GITHUB_SHA::7}</a>)"
+          sed -i "s|<span id=\"version\">dev</span>|<span id=\"version\">$version</span>|" index.html
 
       # .git, .github and other dotfiles (.gitignore, .vscode) are left out by the action
       - uses: actions/upload-pages-artifact@v5

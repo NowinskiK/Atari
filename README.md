@@ -19,11 +19,12 @@ push to `main`: <https://nowinskik.github.io/Atari/>.
 | [games/files/robbo-konstruktor.atr](games/files/robbo-konstruktor.atr) | the disk: the fixed version (copy protection off) built in [lkavalon-atari](https://github.com/NowinskiK/lkavalon-atari), `Robbo Konstruktor (1990)(L.K. Avalon)(PL)[cr CAMOsoft 2026].atr` |
 | [games/files/](games/files/) `fred.xex`, `hans-kloss.xex`, `misja.xex`, `jaskiniowiec.xex` | Fred, Hans Kloss, Misja and Jaskiniowiec, executables: booted from a write-protected boot disk (`buildBootDisk`) |
 | [games/](games/) | the catalog: [catalog.yml](games/catalog.yml) lists the games in order, `<name>.yml` holds each game's settings, an optional `<name>.md` its About text |
+| [CHANGELOG.md](CHANGELOG.md) | the release notes: add an entry with each change; [changelog/index.html](changelog/index.html) shows them on the site |
 
 ## How it works
 
 - Emulator: the headless core [`@sfotty-pie/a8`](https://github.com/cyco130/sfotty-pie) 0.3.0 (MIT), loaded as an
-  ES module from jsDelivr (pinned version). Machine: 800XL, PAL, 64 KB, no BASIC (OPTION is held for the first
+  ES module from jsDelivr (pinned version). Machine: 800XL, PAL, 128 KB like a 130XE, no BASIC (OPTION is held for the first
   30 frames after power-on, like on a real XL; Hans Kloss reboots itself when BASIC is on).
 - Disk: the emulator's built-in SIO serves read / write / status on D1:. It has no **format** command, which
   "zapisz Robbo" needs (`IO_FORMAT` $9388 sends `$22`), so `player.js` traps `SIOV` for `$21` / `$22`: it clears
