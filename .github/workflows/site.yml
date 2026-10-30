@@ -50,11 +50,13 @@ jobs:
             curl -fsSL --retry 3 -o "games/files/$file" "$url"
           done
 
-      # the footer's version: the date of the commit (as in CHANGELOG.md) and a link to it
+      # the footer's version: the newest version in CHANGELOG.md and a link to the commit
       - name: Stamp the version
         run: |
           grep -q '<span id="version">dev</span>' index.html
-          version="$(git log -1 --format=%cs) (<a href=\"https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA\">${GITHUB_SHA::7}</a>)"
+          release=$(sed -nE 's/^## ([0-9][0-9.]*) - .*/\1/p' CHANGELOG.md | head -n 1)
+          [ -n "$release" ]
+          version="$release (<a href=\"https://github.com/$GITHUB_REPOSITORY/commit/$GITHUB_SHA\">${GITHUB_SHA::7}</a>)"
           sed -i "s|<span id=\"version\">dev</span>|<span id=\"version\">$version</span>|" index.html
 
       # .git, .github and other dotfiles (.gitignore, .vscode) are left out by the action
