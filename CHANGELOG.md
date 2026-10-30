@@ -35,7 +35,4 @@ version heading is what the Site workflow shows in the page footer. -->
 - Shift + PC arrow keys did nothing in games that use the Atari cursor keys, such as firing in the Robbo games.
 - GitHub Pages workflow: the game download step and the Node 24 actions.
 - The `stop site` VS Code task hung after debugging.
-
-### Known issues
-
-- Robbo NK stops on its first screen.
+- Robbo NK stopped on its first screen and again after START: it calls an OS table as code and uses addresses from the real XL OS.

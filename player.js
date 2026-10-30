@@ -278,12 +278,22 @@ function trapXlDskinv(m) {
 	});
 }
 
-// Problem Jasia fills the OS vectors ($200-$225) with a table saved from the real XL OS, and its keyboard IRQ handler
-// ends with JMP $C030 at $014C. Those are ROM addresses of the real OS: in AltirraOS they are the middle of other
+// Robbo NK calls $E4C1 while it sets up its first screen. In AltirraOS that is a table of bit masks, not code: run
+// as code, it jumps into the boot disk's loader and crashes. Return at once, as the RTS just before it would.
+const XL_E4C1 = 0xE4C1, BIT_MASK_TABLE = 0x80;
+
+function trapE4C1(m) {
+	m.interceptExecute(XL_E4C1, () => (m.mmu.read(XL_E4C1, PEEK) === BIT_MASK_TABLE ? RTS : undefined));
+}
+
+// Problem Jasia and Robbo NK fill the OS vectors ($200-$225) with a table saved from the real XL OS, and Problem
+// Jasia's keyboard IRQ handler ends with JMP $C030 at $014C. Those are ROM addresses of the real OS: in AltirraOS they are the middle of other
 // code, so RTCLOK stops (the game hangs at its first wait) and any key crashes the CPU (see issue #5). Each is
 // changed to AltirraOS's handler: the vectors at every VBI, the jump just before it is used.
 const XL_VECTORS = [                                  // vector, address in the XL OS, address in AltirraOS
 	[0x222, 0xC0E2, 0xC00C],                           // VVBLKI
+	[0x224, 0xC28A, 0xC050],                           // VVBLKD
+	[0x216, 0xC030, 0xC1DE],                           // VIMIRQ
 	[0x208, 0xFC19, 0xFED5],                           // VKEYBD
 	[0x20A, 0xEB2C, 0xEA49],                           // VSERIN
 	[0x20C, 0xEAAD, 0xEA92],                           // VSEROR
@@ -384,6 +394,7 @@ function machineReady() {
 		trapFormat(machine);
 		trapXlOs(machine);
 		trapXlDskinv(machine);
+		trapE4C1(machine);
 		last = performance.now();
 		step();
 		requestAnimationFrame(present);
