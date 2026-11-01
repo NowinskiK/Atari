@@ -1,0 +1,8 @@
+title: Robbo dla Dzieci
+file: Robbo dla Dzieci (1991)(Sobala, Aleksander)(PL).xex   # disk image (.atr) or executable (.xex) in games/files/
+info: by Aleksander Sobala, Kraków, 1991 · Polish · executable (XEX)
+description: Robbo for the youngest players, built with Robbo Konstruktor to be light, easy and pleasant.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads up to $BFFF)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

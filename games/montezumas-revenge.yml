@@ -1,0 +1,8 @@
+title: Montezuma's Revenge
+file: Montezuma's Revenge (1983)(Utopia Software)(US)(proto)[a2].atr   # disk image (.atr) or executable (.xex) in games/files/
+info: Utopia Software, 1983 · prototype · disk (ATR)
+description: Guide Panama Joe through the rooms of an Aztec pyramid – collect keys and treasure, and avoid the traps.
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

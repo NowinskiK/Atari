@@ -6,6 +6,12 @@ Notable changes to the site, the player and the game catalog.
 entries under an "## Unreleased" heading. To release, change that heading to "## <version> - <date>": the newest
 version heading is what the Site workflow shows in the page footer. -->
 
+## Unreleased
+
+### Added
+
+- Robbo dla Dzieci, Montezuma's Revenge and Moon Patrol in the catalog.
+
 ## 1.0 - 2026-10-30
 
 ### Added
