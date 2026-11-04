@@ -1,0 +1,8 @@
+title: Joust
+file: Joust (1983)(Atari)(US).atr    # disk image (.atr) or executable (.xex) in games/files/
+info: Atari, 1983 · from the Williams arcade game · disk (ATR)
+description: Ride a flying ostrich and joust with the knights on buzzards – the higher lance wins.
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

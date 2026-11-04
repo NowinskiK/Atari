@@ -12,6 +12,7 @@ version heading is what the Site workflow shows in the page footer. -->
 
 - Robbo dla Dzieci, Montezuma's Revenge and Moon Patrol in the catalog.
 - Lasermania, Czaszki, Upiór, Uczeń Czarnoksiężnika and Zeus in the catalog.
+- Joust in the catalog.
 
 ### Fixed
 
