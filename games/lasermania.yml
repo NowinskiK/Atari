@@ -1,0 +1,8 @@
+title: Lasermania
+file: Lasermania (1990)(L.K. Avalon)(PL).atr   # disk image (.atr) or executable (.xex) in games/files/
+info: LK Avalon, 1990 · by Mirosław Liminowicz and Janusz Pelc · Polish · disk (ATR)
+description: Steer the K9 tracked robot through a guarded complex – collect the memory units and shoot the alarm sensors.
+basic: false                         # false = OPTION is held at power-on, BASIC off
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

@@ -14,9 +14,13 @@ const ctx = canvas.getContext("2d");
 const image = ctx.createImageData(W, H);
 const pixels = new Uint32Array(image.data.buffer);
 const palette = paletteFor("pal");
-canvas.width = W;
+// The core's frame is colour clocks $24-$DF. The last 4 ($DC-$DF) are cut off: a TV hides them, and
+// a scrolled wide playfield puts junk there (Joust's striped column). What is left, $24-$DB, is
+// centred on the playfield ($80).
+const VISIBLE_W = W - 8;
+canvas.width = VISIBLE_W;
 canvas.height = H;
-canvas.style.aspectRatio = `${(W * PAL_PIXEL_ASPECT_RATIO).toFixed(1)} / ${H}`;
+canvas.style.aspectRatio = `${(VISIBLE_W * PAL_PIXEL_ASPECT_RATIO).toFixed(1)} / ${H}`;
 
 const LINES_PER_MS = PAL_CYCLES_PER_SECOND / CYCLES_PER_LINE / 1000;
 const MAX_LINES = 312 * 3;           // catch up at most 3 frames after a stall (tab in background)

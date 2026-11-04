@@ -6,11 +6,17 @@ Notable changes to the site, the player and the game catalog.
 entries under an "## Unreleased" heading. To release, change that heading to "## <version> - <date>": the newest
 version heading is what the Site workflow shows in the page footer. -->
 
-## Unreleased
+## 1.1 - 2026-11-04
 
 ### Added
 
 - Robbo dla Dzieci, Montezuma's Revenge and Moon Patrol in the catalog.
+- Lasermania, Czaszki, Upiór, Uczeń Czarnoksiężnika and Zeus in the catalog.
+
+### Fixed
+
+- No more junk column at the right edge of the screen (seen in Joust): the picture no longer shows the last 4 colour
+  clocks, which a TV hides, and is now centred on the playfield.
 
 ## 1.0 - 2026-10-30
 

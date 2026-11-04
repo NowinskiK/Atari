@@ -1,0 +1,8 @@
+title: Uczeń Czarnoksiężnika
+file: uczen_czarnoksieznika.xex      # disk image (.atr) or executable (.xex) in games/files/
+info: LK Avalon, 1992 · by Krzysztof Szmatola · Polish · executable (XEX)
+description: The sorcerer's apprentice searches a maze-like castle for the pages of the Magic Book, the wand and the hat.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads up to $BFFF)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)

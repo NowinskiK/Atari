@@ -1,0 +1,8 @@
+title: Upiór
+file: upior.xex                      # disk image (.atr) or executable (.xex) in games/files/
+info: LK Avalon, 1992 · by Rafał Wójcik · executable (XEX)
+description: A ghoul has taken over your castle – find the 20 gems that open the way to his chamber.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game loads up to $BFFF)
+controls:
+  arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)
