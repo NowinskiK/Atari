@@ -426,10 +426,45 @@ async function play(game) {
 function insert(bytes, name) {
 	disk = bytes[0] === 0xFF && bytes[1] === 0xFF ? buildBootDisk(bytes) : new AtrImage(bytes);
 	diskName = name.replace(/\.[^.]*$/, "") + ".atr";
+	watchWrites(disk);
 	machine.insertDisk(disk);
-	document.getElementById("disk").textContent = `D1: ${name}`;
+	document.getElementById("disk-name").textContent = `D1: ${name}`;
+	setModified(false);
 	for (const b of document.querySelectorAll(".bar button")) b.disabled = false;
 	document.getElementById("save").disabled = disk.writeProtected;   // a boot disk has nothing saved on it
+}
+
+// The disk is "modified" once a write changes a sector (the emulator's SIO, format and the DSKINV trap all call
+// disk.writeSector), until it is downloaded. Writing the same bytes again (a game saving unchanged data) does not count.
+let modified = false;
+function watchWrites(d) {
+	const write = d.writeSector.bind(d);
+	d.writeSector = (sector, data) => {
+		const old = d.readSector(sector);                 // a view of the image: compare before writing
+		const changed = !old || old.some((b, i) => i < data.length && b !== (data[i] & 0xFF));
+		const ok = write(sector, data);
+		if (ok && changed && d === disk) setModified(true);
+		return ok;
+	};
+}
+
+const pageTitle = document.title;
+function setModified(on) {
+	if (modified === on) return;
+	modified = on;
+	document.body.classList.toggle("modified", on);
+	document.getElementById("disk-modified").hidden = !on;
+	document.title = on ? `● ${pageTitle}` : pageTitle;   // seen on the tab too
+}
+
+// closing or reloading the page loses the changes: the browser asks first
+addEventListener("beforeunload", (e) => {
+	if (modified) e.preventDefault();
+});
+
+// another disk in D1: replaces the changed one: ask first (true = go ahead)
+function mayReplaceDisk() {
+	return !modified || confirm("The disk in D1: has changes that you have not downloaded. Replace it and lose them?");
 }
 
 // --- the catalog: games/catalog.yml lists the names, games/<name>.yml holds each game's settings ------
@@ -482,6 +517,7 @@ search.addEventListener("keydown", (e) => {                    // Enter loads th
 
 // --- the two views: the catalog, and a game's screen; the browser's Back returns to the catalog ------
 function openGame(game) {
+	if (!mayReplaceDisk()) return;
 	history.pushState({ game: game.name }, "", `#${game.name}`);
 	play(game).catch(showError);
 }
@@ -518,6 +554,7 @@ function showCatalog() {
 }
 
 addEventListener("popstate", () => {
+	if (history.state?.disk) return void playLink(history.state.disk).catch(showError);
 	const name = history.state?.game ?? location.hash.slice(1);   // a #name typed into the address bar has no state
 	const game = games.find((g) => g.name === name);
 	if (game) play(game).catch(showError);
@@ -528,9 +565,16 @@ document.getElementById("back").addEventListener("click", () => {
 	else showCatalog();
 });
 
-// a link to #name opens that game; the catalog stays as the page before it, for Back and ← Catalog
-const linked = location.hash.slice(1);
-history.replaceState(null, "", location.pathname + location.search);
+// a link to #name opens that game, a link with ?disk=<url> boots that file; the catalog stays as the page
+// before it, for Back and ← Catalog
+const linkedDisk = new URLSearchParams(location.search).get("disk");
+const linked = linkedDisk ? "" : location.hash.slice(1);
+const search0 = location.search;
+history.replaceState(null, "", location.pathname + (linkedDisk ? "" : location.search));
+if (linkedDisk) {
+	history.pushState({ disk: linkedDisk }, "", location.pathname + search0);
+	playLink(linkedDisk).catch(showError);
+}
 loadCatalog().catch(showError);
 search.focus();
 
@@ -542,26 +586,76 @@ document.getElementById("save").addEventListener("click", () => {
 	a.download = diskName;
 	a.click();
 	setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+	setModified(false);
 	canvas.focus();
 });
+const isXex = (bytes) => bytes[0] === 0xFF && bytes[1] === 0xFF;
+const isAtr = (bytes) => bytes[0] === 0x96 && bytes[1] === 0x02;
+
+// a disk of your own (from the computer or from a link): the default controls, BASIC off
+async function runOwnDisk(bytes, name, boot) {
+	await machineReady();
+	setControls();
+	basicOff = true;
+	insert(bytes, name);
+	if (boot || isXex(bytes)) powerOn();                      // an executable only runs when booted
+	document.body.classList.add("running");
+	canvas.focus();
+}
+
 async function loadDisk(e) {
 	const file = e.target.files[0];
-	if (!file) return;
+	e.target.value = "";
+	if (!file || !mayReplaceDisk()) return;
 	const bytes = new Uint8Array(await file.arrayBuffer());
 	const fromCatalog = gameView.hidden;                      // nothing is running there: the disk has to boot
 	if (fromCatalog) history.pushState({ game: file.name }, "", "#disk");
 	showGame({ title: file.name });
-	await machineReady();
-	setControls();                                            // a disk of your own: the default controls
-	basicOff = true;
-	insert(bytes, file.name);
-	if (fromCatalog || (bytes[0] === 0xFF && bytes[1] === 0xFF)) powerOn();   // an executable only runs when booted
-	document.body.classList.add("running");
-	e.target.value = "";
-	canvas.focus();
+	await runOwnDisk(bytes, file.name, fromCatalog);
+}
+
+// ?disk=<url>: download an .atr or .xex from anywhere that allows it (CORS) and boot it. A GitHub page link
+// (github.com/<owner>/<repo>/blob/<branch>/<path>) is turned into its raw file, which GitHub serves with CORS.
+const MAX_DISK = 16 << 20;
+function diskUrl(text) {
+	const url = new URL(text, location.href);                 // a relative path is a file on this site
+	if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error(`${text}: not a web link`);
+	if (url.hostname !== "github.com" && url.hostname !== "www.github.com") return url;
+	const m = url.pathname.match(/^\/([^/]+)\/([^/]+)\/(?:blob|raw)\/(.+)$/);
+	if (!m) throw new Error(`${text}: link to a file on GitHub (its …/blob/… page), not to a repository or a folder`);
+	return new URL(`https://raw.githubusercontent.com/${m[1]}/${m[2]}/${m[3]}`);
+}
+
+async function fetchDisk(url) {
+	let r;
+	try {
+		r = await fetch(url);
+	} catch {
+		throw new Error(`cannot download ${url.href}: the site does not let other pages read its files (no CORS header), or it cannot be reached`);
+	}
+	if (!r.ok) throw new Error(`${url.href}: HTTP ${r.status}`);
+	if (Number(r.headers.get("content-length")) > MAX_DISK) throw new Error(`${url.href}: the file is too large for a disk`);
+	const bytes = new Uint8Array(await r.arrayBuffer());
+	if (bytes.length > MAX_DISK) throw new Error(`${url.href}: the file is too large for a disk`);
+	if (!isXex(bytes) && !isAtr(bytes)) throw new Error(`${url.href} is not an .atr or .xex file (a link to a folder or a web page?)`);
+	return bytes;
+}
+
+async function playLink(link) {
+	showGame({ title: link.split("/").pop() || link, info: link });
+	const status = document.getElementById("status");
+	status.textContent = "Loading…";
+	const url = diskUrl(link);
+	let name = url.pathname.split("/").pop() || url.hostname;
+	try { name = decodeURIComponent(name); } catch { /* keep it as it is */ }
+	document.getElementById("game-title").textContent = name;
+	const bytes = await fetchDisk(url);
+	status.textContent = "";
+	await runOwnDisk(bytes, name, true);
 }
 for (const id of ["load", "load-catalog"]) document.getElementById(id).addEventListener("change", (e) => loadDisk(e).catch(showError));
 document.getElementById("blank").addEventListener("click", () => {
+	if (!mayReplaceDisk()) return;
 	insert(blankDisk(), "blank.atr");
 	canvas.focus();
 });

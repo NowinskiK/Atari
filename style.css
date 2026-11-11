@@ -55,6 +55,8 @@ canvas { display: block; width: 100%; max-height: 80vh; object-fit: contain; ima
 	fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 #disk { align-self: center; color: var(--muted); font-size: .9rem; }
+#disk-modified { color: var(--accent); font-weight: 600; }
+.modified #save { border-color: var(--accent); color: var(--accent); }
 table { border-collapse: collapse; width: 100%; font-size: .95rem; }
 td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 td:first-child { white-space: nowrap; color: var(--muted); width: 1%; }

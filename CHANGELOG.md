@@ -6,6 +6,15 @@ Notable changes to the site, the player and the game catalog.
 entries under an "## Unreleased" heading. To release, change that heading to "## <version> - <date>": the newest
 version heading is what the Site workflow shows in the page footer. -->
 
+## Unreleased
+
+### Added
+
+- Links to a disk file: `?disk=<url>` downloads an .atr or .xex file and boots it. A link to a file page on GitHub
+  works as it is, from any repository.
+- A changed disk is marked "● modified, not downloaded" (also in the tab title) until **Download disk**; the browser
+  asks before the page is closed or reloaded, or another disk replaces it.
+
 ## 1.1 - 2026-11-04
 
 ### Added

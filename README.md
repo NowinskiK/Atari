@@ -68,6 +68,11 @@ add `url:` with the download link next to `file:`. The workflow downloads it int
 A link to `#<name>` (for example `…/#problem-jasia`) opens that game and runs it at once. Browsers keep the sound off
 until the first click or key press on the page.
 
+A link with `?disk=<url>` downloads any `.atr` or `.xex` file and boots it with the default controls, for example
+`…/?disk=https://github.com/<owner>/<repo>/blob/main/<path>/game.xex`. A GitHub file page link (`/blob/` or `/raw/`)
+is turned into its `raw.githubusercontent.com` address, which allows the download (CORS). Files on other sites load
+only when that site sends a CORS header; otherwise the page shows an error. Back returns to the catalog.
+
 For a longer text, add `games/<name>.md`: when it exists, the game's page shows it as **About** (Markdown,
 rendered with [marked](https://marked.js.org/) 12.0.2 from jsDelivr), e.g.
 [games/robbo-konstruktor.md](games/robbo-konstruktor.md).

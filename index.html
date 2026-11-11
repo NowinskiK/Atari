@@ -41,7 +41,7 @@
 			<label><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/></svg>Load disk…<input id="load" type="file" accept=".atr,.xex"></label>
 			<button id="blank" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v5h8V3"/><path d="M7 21v-7h10v7"/></svg>Blank disk</button>
 			<button id="fullscreen" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>Full screen</button>
-			<span id="disk"></span>
+			<span id="disk"><span id="disk-name"></span> <span id="disk-modified" title="Saved to the disk in the browser only: Download disk to keep it" hidden>● modified, not downloaded</span></span>
 		</div>
 		<p id="game-description"></p>
 
@@ -52,7 +52,9 @@
 		<h2>Disks</h2>
 		<p>A game runs from a disk image in drive D1: (an executable, <code>.xex</code>, is put on a write-protected
 			boot disk). What you save goes to that image in the browser and is lost when you close or reload the page,
-			so use <b>Download disk</b> to keep it and <b>Load disk…</b> to put it back later. Loading or creating a disk
+			so use <b>Download disk</b> to keep it and <b>Load disk…</b> to put it back later. Once something on the disk
+			changes, it is marked <b>● modified, not downloaded</b> (on the tab too) until you download it, and the browser
+			asks before you close the page or put another disk in. Loading or creating a disk
 			swaps it in D1: like changing a floppy; <b>Restart</b> boots from it. A loaded <code>.xex</code> boots at once.</p>
 
 		<h2>Keys</h2>
