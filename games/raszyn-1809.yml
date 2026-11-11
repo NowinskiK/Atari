@@ -1,0 +1,7 @@
+title: Raszyn 1809
+file: Raszyn 1809 (v3).xex           # disk image (.atr) or executable (.xex) in games/files/
+info: Mirage Software, 1992 · by Maciej Ślifirczyk, music by Jakub Husak · Polish · executable (XEX)
+description: A strategy game about the Battle of Raszyn, fought in 1809 in the Polish–Austrian War.
+basic: false                         # false = OPTION is held at power-on, BASIC off (the game switches BASIC on itself: it is an Atari BASIC program)
+controls:
+  arrows: keys                       # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions

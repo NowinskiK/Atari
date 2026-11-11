@@ -5,8 +5,8 @@
 
 A static web page with a catalog of 8-bit Atari games, played in an Atari 800XL emulator: the fixed version of
 [Robbo Konstruktor](https://github.com/NowinskiK/lkavalon-atari/tree/main/robbo-konstruktor), Fred, Hans Kloss, Misja and Jaskiniowiec.
-The start page is the catalog: search by name or info, and **Load** on a row hides the list, shows the game's
-screen and boots it (the first Load starts the emulator). **← Catalog** or the browser's Back returns to the list
+The start page is the catalog: search by name or info, and **▶ Run** on a row hides the list, shows the game's
+screen and boots it (the first Run starts the emulator). **← Catalog** or the browser's Back returns to the list
 and pauses the game. It is published to GitHub Pages by [.github/workflows/site.yml](.github/workflows/site.yml) on every
 push to `main`: <https://nowinskik.github.io/Atari/>.
 
@@ -16,6 +16,7 @@ push to `main`: <https://nowinskik.github.io/Atari/>.
 | [style.css](style.css) | the page's styles |
 | [player.js](player.js) | the player: machine, keyboard, gamepad, sound, timing, disk handling, catalog and search, views, per-game controls |
 | [firmware/altirraos-xl.rom](firmware/altirraos-xl.rom) | AltirraOS XL/XE – the free replacement OS ([licence](firmware/README.md)) |
+| [firmware/altirra-basic.rom](firmware/altirra-basic.rom) | Altirra BASIC – the free replacement for the built-in Atari BASIC ([licence](firmware/README.md)) |
 | [games/files/robbo-konstruktor.atr](games/files/robbo-konstruktor.atr) | the disk: the fixed version (copy protection off) built in [lkavalon-atari](https://github.com/NowinskiK/lkavalon-atari), `Robbo Konstruktor (1990)(L.K. Avalon)(PL)[cr CAMOsoft 2026].atr` |
 | [games/files/](games/files/) `fred.xex`, `hans-kloss.xex`, `misja.xex`, `jaskiniowiec.xex` | Fred, Hans Kloss, Misja and Jaskiniowiec, executables: booted from a write-protected boot disk (`buildBootDisk`) |
 | [games/](games/) | the catalog: [catalog.yml](games/catalog.yml) lists the games in order, `<name>.yml` holds each game's settings, an optional `<name>.md` its About text |
@@ -24,8 +25,10 @@ push to `main`: <https://nowinskik.github.io/Atari/>.
 ## How it works
 
 - Emulator: the headless core [`@sfotty-pie/a8`](https://github.com/cyco130/sfotty-pie) 0.3.0 (MIT), loaded as an
-  ES module from jsDelivr (pinned version). Machine: 800XL, PAL, 128 KB like a 130XE, no BASIC (OPTION is held for the first
-  30 frames after power-on, like on a real XL; Hans Kloss reboots itself when BASIC is on).
+  ES module from jsDelivr (pinned version). Machine: 800XL, PAL, 128 KB like a 130XE, with Altirra BASIC built in. BASIC
+  starts off (OPTION is held for the first 30 frames after power-on, like on a real XL; Hans Kloss reboots itself when
+  BASIC is on), but a game can switch it back on through PORTB: Raszyn 1809 is an Atari BASIC program in an
+  executable and runs on the ROM.
 - Disk: the emulator's built-in SIO serves read / write / status on D1:. It has no **format** command, which
   "zapisz Robbo" needs (`IO_FORMAT` $9388 sends `$22`), so `player.js` traps `SIOV` for `$21` / `$22`: it clears
   the image and returns status 1. Saving changes only the image in the browser; **Download disk** saves it as a file.

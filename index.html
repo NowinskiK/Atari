@@ -12,7 +12,7 @@
 	<h1>Atari Games</h1>
 
 	<section id="catalog-view">
-		<p class="sub">8-bit Atari games running in an emulator in your browser · pick a game and press <b>Load</b></p>
+		<p class="sub">8-bit Atari games running in an emulator in your browser · pick a game and press <b>Run</b></p>
 		<input id="search" type="search" placeholder="Search by name or info…" aria-label="Search games" autocomplete="off">
 		<ul class="catalog" aria-label="Games">
 			<li id="own-disk" class="game">
@@ -32,7 +32,7 @@
 			</div>
 		</div>
 		<div class="screen">
-			<canvas id="screen" tabindex="0" data-os="firmware/altirraos-xl.rom"></canvas>
+			<canvas id="screen" tabindex="0" data-os="firmware/altirraos-xl.rom" data-basic="firmware/altirra-basic.rom"></canvas>
 			<div id="status"></div>
 		</div>
 		<div class="bar">

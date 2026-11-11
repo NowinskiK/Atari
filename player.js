@@ -1,6 +1,7 @@
 // Minimal Atari 800XL (PAL, 64 KB) player for disk images (ATR) and executables (XEX), built on the headless
 // Sfotty Pie emulator core (https://github.com/cyco130/sfotty-pie, MIT) and AltirraOS.
-// The page sets the OS on the canvas (data-os, 16 KB XL/XE OS ROM); the catalog comes from games/catalog.yml.
+// The page sets the firmware on the canvas (data-os, 16 KB XL/XE OS ROM; data-basic, 8 KB BASIC ROM);
+// the catalog comes from games/catalog.yml.
 import {
 	Atari, AtrImage, Joystick, buildBootDisk, KEYBOARD_LINES, paletteFor, CYCLES_PER_LINE,
 	PAL_CYCLES_PER_SECOND, PAL_PIXEL_ASPECT_RATIO, FRAME_BUFFER_WIDTH as W, FRAME_BUFFER_HEIGHT as H,
@@ -392,8 +393,10 @@ let ready = null;
 function machineReady() {
 	ready ??= (async () => {
 		await startAudio();
-		const os = await fetchBytes(canvas.dataset.os);
-		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os });   // 130XE: Problem Jasia needs its 128 KB
+		// the built-in BASIC: OPTION at power-on switches it out (basic: false), but a game may switch it back on
+		// through PORTB - Raszyn 1809 is an Atari BASIC program in an executable and runs on the ROM
+		const [os, basic] = await Promise.all([fetchBytes(canvas.dataset.os), fetchBytes(canvas.dataset.basic)]);
+		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os, basic });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
 		trapFormat(machine);
 		trapXlOs(machine);

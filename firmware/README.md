@@ -9,3 +9,11 @@ Copyright (C) 2008-2016 Avery Lee. Offered under the FSF all-permissive license:
 
 > Copying and distribution of this file, with or without modification, are permitted in any medium without royalty
 > provided the copyright notice and this notice are preserved. This file is offered as-is, without any warranty.
+
+`altirra-basic.rom` – **Altirra 8K BASIC** 1.59 (8 KB), a clean-room replacement for Atari BASIC, from the
+[Altirra emulator](https://www.virtualdub.org/altirra.html). Taken unmodified from
+[Sfotty Pie](https://github.com/cyco130/sfotty-pie/tree/main/apps/a8-web/library/firmware) (MD5
+`2d1f3b063685b404f08ab997014069cd`). The player builds it into the machine as the XL/XE's built-in BASIC; it is
+switched off at power-on unless a game asks for it.
+
+Copyright (C) 2008-2016 Avery Lee. Offered under the same FSF all-permissive license as AltirraOS above.

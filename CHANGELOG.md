@@ -6,6 +6,18 @@ Notable changes to the site, the player and the game catalog.
 entries under an "## Unreleased" heading. To release, change that heading to "## <version> - <date>": the newest
 version heading is what the Site workflow shows in the page footer. -->
 
+## Unreleased
+
+### Added
+
+- Raszyn 1809 in the catalog.
+
+### Fixed
+
+- Games written in Atari BASIC run: the machine now has a BASIC ROM (Altirra BASIC). It is still switched off at
+  power-on, but a game can switch it on. Before, such a game locked up after loading (#9).
+- The line under the page title says to press **Run**, the catalog's button, not **Load**, which no longer exists.
+
 ## 1.2 - 2026-11-11
 
 ### Added
