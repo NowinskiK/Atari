@@ -81,6 +81,7 @@ function key(e, down) {
 		held.add(c);
 		pressedAt.set(c, frameCount);
 		apply(c, true);
+		noteKey(c);
 	} else if (held.has(c)) {
 		const at = pressedAt.get(c) + MIN_HOLD_FRAMES;
 		if (frameCount >= at) release(c);
@@ -142,6 +143,71 @@ function setControls(c = {}) {
 		return i ? [" ", kbd] : [kbd];
 	}));
 }
+
+// --- hint: the game ignores the keys pressed (Joust waits for START, not fire) -------------------------
+// The game's own code (PC below the OS ROM) is watched for reads of the joystick, the keyboard and the console keys.
+// A key pressed is "ignored" when the game reads nothing of its kind within HINT_CHECK_FRAMES; after HINT_PRESSES
+// ignored keys within HINT_WINDOW_FRAMES a hint shows on the screen - once per boot, and not after a console key.
+const OS_ROM = 0xC000, CONSOL = 0xD01F, CH = 0x2FC;
+const STICK_REGS = [0xD010, 0xD011, 0xD300, 0x278, 0x279, 0x284, 0x285];   // TRIG0/1, PORTA, STICK0/1, STRIG0/1
+const KEY_REGS = [CH, 0xD209, 0xD20F];                                     // CH, KBCODE, SKSTAT (Shift)
+const HINT_CHECK_FRAMES = 25, HINT_PRESSES = 4, HINT_WINDOW_FRAMES = 250, CONSOLE_POLL_FRAMES = 50;
+const HINT_SHOW_MS = 15000;
+const lastRead = { stick: -1, keys: -1, console: -1 };
+let hintChecks = [], ignoredAt = [], hintDone = false, hintTimer = 0;
+const hint = document.getElementById("hint");
+function watchInputReads(m) {
+	const seen = (kind) => () => { if (m.cpu.PC < OS_ROM) lastRead[kind] = frameCount; };
+	for (const a of STICK_REGS) m.observeRead(a, seen("stick"));
+	for (const a of KEY_REGS) m.observeRead(a, seen("keys"));
+	m.observeRead(CONSOL, seen("console"));
+	m.observeWrite(CH, (_, v) => { if (v === 0xFF) lastRead.keys = frameCount; });   // the key was taken (also by the OS)
+}
+
+function noteKey(c) {
+	if (c in CONSOLE) { hintDone = true; hideHint(); return; }
+	if (hintDone) return;
+	const kind = isFire(c) || dirOf(c) ? "stick" : "keys", at = frameCount;
+	hintChecks.push({ due: at + HINT_CHECK_FRAMES, kind, at });
+}
+
+function checkHint() {
+	const due = hintChecks.filter((h) => h.due <= frameCount);
+	if (!due.length) return;
+	hintChecks = hintChecks.filter((h) => h.due > frameCount);
+	for (const h of due) if (lastRead[h.kind] < h.at) ignoredAt.push(h.at);
+	ignoredAt = ignoredAt.filter((at) => at > frameCount - HINT_WINDOW_FRAMES);
+	if (!hintDone && ignoredAt.length >= HINT_PRESSES) showHint(lastRead.console > frameCount - CONSOLE_POLL_FRAMES);
+}
+
+function showHint(waitsForConsole) {
+	hintDone = true;
+	hint.querySelector(".hint-text").innerHTML = waitsForConsole
+		? "The game seems to wait for <b>START</b>: press <kbd>F2</kbd>. <kbd>F3</kbd> is SELECT, <kbd>F4</kbd> OPTION."
+		: "The game does not seem to react to these keys. Many games start with <b>START</b>: press <kbd>F2</kbd>.";
+	hint.hidden = false;
+	clearTimeout(hintTimer);
+	hintTimer = setTimeout(hideHint, HINT_SHOW_MS);
+}
+
+function hideHint() {
+	clearTimeout(hintTimer);
+	hint.hidden = true;
+}
+
+// a new boot: forget the keys pressed before
+function resetHint() {
+	hintChecks = []; ignoredAt = []; hintDone = false;
+	lastRead.stick = lastRead.keys = lastRead.console = -1;
+	hideHint();
+}
+
+hint.querySelector(".hint-close").addEventListener("click", () => { hideHint(); canvas.focus(); });
+hint.querySelector(".hint-keys").addEventListener("click", async () => {
+	hideHint();
+	if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});   // the key list is on the page
+	document.getElementById("keys").scrollIntoView({ behavior: "smooth" });
+});
 
 addEventListener("keydown", (e) => key(e, true));
 addEventListener("keyup", (e) => key(e, false));
@@ -334,6 +400,7 @@ function blankDisk() {
 function powerOn() {
 	releaseAll();                                      // first: it releases the console keys, OPTION too
 	machine.console.powerCycle();
+	resetHint();
 	machine.console.option = basicOff;
 	optionFrames = basicOff ? OPTION_HOLD_FRAMES : 0;
 }
@@ -353,6 +420,7 @@ function runLine() {
 		deferred = deferred.filter((d) => d.at > frameCount);
 		for (const d of due) release(d.c);
 	}
+	if (hintChecks.length) checkHint();
 	return true;
 }
 
@@ -402,6 +470,7 @@ function machineReady() {
 		trapXlOs(machine);
 		trapXlDskinv(machine);
 		trapE4C1(machine);
+		watchInputReads(machine);
 		last = performance.now();
 		step();
 		requestAnimationFrame(present);
@@ -551,6 +620,7 @@ async function showAbout(game) {
 
 function showCatalog() {
 	releaseAll();
+	hideHint();
 	gameView.hidden = true;
 	catalogView.hidden = false;
 	search.focus();
@@ -662,4 +732,7 @@ document.getElementById("blank").addEventListener("click", () => {
 	insert(blankDisk(), "blank.atr");
 	canvas.focus();
 });
-document.getElementById("fullscreen").addEventListener("click", () => canvas.requestFullscreen?.());
+// the screen's box goes full screen, not just the canvas: the hint and the status show there too
+document.getElementById("fullscreen").addEventListener("click", () => {
+	canvas.parentElement.requestFullscreen?.().then(() => canvas.focus(), () => {});
+});

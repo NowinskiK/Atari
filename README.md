@@ -37,6 +37,12 @@ push to `main`: <https://nowinskik.github.io/Atari/>.
 - Keys: PC arrows send Atari Ctrl + the arrow keys (the game masks Ctrl off with `AND #$3F` in `GET_KEY` $3130,
   the title editor needs Ctrl+arrows). Every key stays down for at least 3 frames, so a quick tap is not lost
   between two emulation steps. Key list on the page.
+- Hint: the player watches which inputs the game's own code reads (code below the OS ROM at $C000): the joystick
+  (TRIG, PORTA, STICK/STRIG), the keyboard (CH, KBCODE, SKSTAT, or CH set back to $FF) and the console keys
+  (CONSOL). A key the game reads nothing of within 25 frames counts as ignored. After 4 ignored keys within
+  5 seconds a hint shows on the screen: "press F2 for START" when the game polls CONSOL (Joust and Moon Patrol
+  wait for START and ignore the fire button), otherwise a general one. It shows once per boot and not after
+  F2–F4; **All keys** scrolls to the key list. Full screen covers the screen's box, so the hint shows there too.
 - Sound: POKEY level per machine cycle → averaged per sample, DC removed → an `AudioWorklet` ring buffer
   (starts after the Start click, as browsers require).
 
