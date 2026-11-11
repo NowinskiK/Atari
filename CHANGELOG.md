@@ -6,7 +6,7 @@ Notable changes to the site, the player and the game catalog.
 entries under an "## Unreleased" heading. To release, change that heading to "## <version> - <date>": the newest
 version heading is what the Site workflow shows in the page footer. -->
 
-## Unreleased
+## 1.2 - 2026-11-11
 
 ### Added
 
