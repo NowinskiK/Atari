@@ -5,4 +5,7 @@ description: Ride a flying ostrich and joust with the knights on buzzards – th
 basic: false                         # false = OPTION is held at power-on, BASIC off
 controls:
   arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
-  fire: [Space, ControlLeft]         # more PC keys for the joystick button (right Ctrl and numpad 0 always are)
+  fire: [Space, ControlLeft]         # more PC keys for the joystick button
+  player2:                           # joystick 2 on the keyboard (two players at once): the right part of the keyboard
+    move: [Numpad8, Numpad2, Numpad4, Numpad6]   # up, down, left, right
+    fire: [Numpad0, ControlRight]

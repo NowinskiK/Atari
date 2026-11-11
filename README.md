@@ -66,7 +66,14 @@ basic: false                         # false = OPTION is held at power-on, BASIC
 controls:
   arrows: joystick                   # keys = Atari cursor keys (Ctrl + arrows), joystick = joystick directions
   fire: [Space, ControlLeft]         # more PC keys (KeyboardEvent.code) for the joystick button
+  player2:                           # optional: joystick 2 on the keyboard, for two players (Joust)
+    move: [Numpad8, Numpad2, Numpad4, Numpad6]   # up, down, left, right
+    fire: [Numpad0, ControlRight]
 ```
+
+A second gamepad is joystick 2 in every game. On the keyboard, joystick 2 has keys only when the game sets
+`player2:`. Its keys win over the others: above, the numeric keypad and right Ctrl, which are joystick 1 in other
+games, become player 2's joystick.
 
 A game hosted on another site (for example [Saper](games/saper.yml) from atarionline.pl) is not kept in the repository:
 add `url:` with the download link next to `file:`. The workflow downloads it into `games/files/<file>` before publishing
@@ -86,7 +93,8 @@ For a longer text, add `games/<name>.md`: when it exists, the game's page shows 
 rendered with [marked](https://marked.js.org/) 12.0.2 from jsDelivr), e.g.
 [games/robbo-konstruktor.md](games/robbo-konstruktor.md).
 
-Right Ctrl, numpad 0 and the numpad 8 / 2 / 4 / 6 joystick work in every game. A disk loaded with **Load disk…**
+Right Ctrl, numpad 0 and the numpad 8 / 2 / 4 / 6 joystick work in every game, unless `player2:` takes them (Joust).
+A disk loaded with **Load disk…**
 (on a game's page, or at the end of the catalog) gets the default controls (`arrows: keys`, BASIC off).
 
 To update the Robbo disk, copy a new build of the fixed version from lkavalon-atari over

@@ -28,7 +28,7 @@ const MAX_LINES = 312 * 3;           // catch up at most 3 frames after a stall 
 const OPTION_HOLD_FRAMES = 30;       // hold OPTION at power-on: BASIC off, $A000-$BFFF is RAM for the game
                                      // (AltirraOS reads it about 6 frames in; Hans Kloss reboots if BASIC is on)
 
-let machine, stick, disk, diskName;
+let machine, stick, stick2, disk, diskName;
 let optionFrames = 0, basicOff = true;
 
 // --- keyboard: PC key (KeyboardEvent.code) -> Atari scan code ------------------------------
@@ -56,13 +56,20 @@ const PAD_DIRS = { Numpad8: 1, Numpad2: 2, Numpad4: 4, Numpad6: 8 };
 const PAD_FIRE = new Set(["ControlRight", "Numpad0"]);
 // per game (controls in games/<name>.yml): arrows = "keys" (the Atari cursor keys above) or "joystick",
 // fire = more PC keys for the joystick button
+// player2 = joystick 2 on the keyboard, for two-player games (Joust): move = the PC keys for up, down, left, right,
+// fire = the PC keys for its button. Its keys win over the ones above: in Joust the numeric keypad and right Ctrl
+// are joystick 2. A second gamepad is joystick 2 in every game.
 const ARROW_DIRS = { ArrowUp: 1, ArrowDown: 2, ArrowLeft: 4, ArrowRight: 8 };
-let controls = { arrows: "keys", fire: new Set() };
-const isFire = (c) => PAD_FIRE.has(c) || controls.fire.has(c);
-const dirOf = (c) => PAD_DIRS[c] ?? (controls.arrows === "joystick" ? ARROW_DIRS[c] : 0) ?? 0;
+const DIR_BITS = [1, 2, 4, 8];   // up, down, left, right
+let controls = { arrows: "keys", fire: new Set(), dirs2: {}, fire2: new Set() };
+const isFire2 = (c) => controls.fire2.has(c);
+const dir2Of = (c) => controls.dirs2[c] ?? 0;
+const isPlayer2 = (c) => isFire2(c) || !!dir2Of(c);
+const isFire = (c) => !isPlayer2(c) && (PAD_FIRE.has(c) || controls.fire.has(c));
+const dirOf = (c) => (isPlayer2(c) ? 0 : PAD_DIRS[c] ?? (controls.arrows === "joystick" ? ARROW_DIRS[c] : 0) ?? 0);
 
 const held = new Set();
-let ctrlArrows = 0, kbDir = 0, kbFire = false;
+let ctrlArrows = 0, kbDir = 0, kbFire = false, kbDir2 = 0, kbFire2 = false;
 
 // A key stays down at least MIN_HOLD_FRAMES emulated frames: the emulator runs in chunks, and a quick
 // tap could otherwise be pressed and released between two of them, unseen by the Atari.
@@ -70,7 +77,8 @@ const MIN_HOLD_FRAMES = 3;
 const pressedAt = new Map();
 let deferred = [], frameCount = 0;
 
-const handles = (c) => c in SCAN || c in ARROWS || c in META || c in CONSOLE || c in PAD_DIRS || isFire(c);
+const handles = (c) => c in SCAN || c in ARROWS || c in META || c in CONSOLE || c in PAD_DIRS || isFire(c) ||
+	isPlayer2(c);
 
 function key(e, down) {
 	const c = e.code;
@@ -106,6 +114,8 @@ function apply(c, down) {
 	const kb = machine.keyboard;
 	if (isFire(c)) kbFire = [...held].some(isFire);
 	else if (dirOf(c)) kbDir = [...held].reduce((d, k) => d | dirOf(k), 0);
+	else if (isFire2(c)) kbFire2 = [...held].some(isFire2);
+	else if (dir2Of(c)) kbDir2 = [...held].reduce((d, k) => d | dir2Of(k), 0);
 	else if (c in SCAN) down ? kb.pressKey(SCAN[c]) : kb.releaseKey(SCAN[c]);
 	else if (c in ARROWS) {
 		ctrlArrows += down ? 1 : -1;
@@ -121,7 +131,7 @@ function apply(c, down) {
 }
 
 function releaseAll() {
-	held.clear(); deferred = []; ctrlArrows = 0; kbDir = 0; kbFire = false;
+	held.clear(); deferred = []; ctrlArrows = 0; kbDir = 0; kbFire = false; kbDir2 = 0; kbFire2 = false;
 	if (!machine) return;
 	machine.keyboard.releaseAll();
 	for (const k of Object.values(CONSOLE)) machine.console[k] = false;
@@ -130,18 +140,29 @@ function releaseAll() {
 
 // switch to a game's controls and show them in the key list
 const KEY_NAMES = { ControlLeft: "left Ctrl", ControlRight: "right Ctrl", ShiftLeft: "left Shift", ShiftRight: "right Shift" };
+// <kbd> elements for PC key codes, separated by spaces (Numpad8 = "num 8")
+const kbds = (codes) => codes.flatMap((k, i) => {
+	const kbd = document.createElement("kbd");
+	kbd.textContent = KEY_NAMES[k] ?? k.replace(/^(Key|Digit)/, "").replace(/^Numpad/, "num ");
+	return i ? [" ", kbd] : [kbd];
+});
 function setControls(c = {}) {
 	releaseAll();
-	controls = { arrows: c.arrows === "joystick" ? "joystick" : "keys", fire: new Set(c.fire ?? []) };
+	const p2 = c.player2 ?? {};
+	controls = {
+		arrows: c.arrows === "joystick" ? "joystick" : "keys", fire: new Set(c.fire ?? []),
+		dirs2: Object.fromEntries((p2.move ?? []).map((k, i) => [k, DIR_BITS[i]])), fire2: new Set(p2.fire ?? []),
+	};
 	document.querySelector("#keys-arrows td:last-child").textContent =
 		controls.arrows === "joystick" ? "joystick" : "move (Atari cursor keys)";
 	const fire = document.getElementById("keys-fire");
 	fire.hidden = !controls.fire.size;
-	fire.cells[0].replaceChildren(...[...controls.fire].flatMap((k, i) => {
-		const kbd = document.createElement("kbd");
-		kbd.textContent = KEY_NAMES[k] ?? k.replace(/^(Key|Digit)/, "");
-		return i ? [" ", kbd] : [kbd];
-	}));
+	fire.cells[0].replaceChildren(...kbds([...controls.fire]));
+	const player2 = document.getElementById("keys-player2");
+	player2.hidden = !(p2.move?.length || p2.fire?.length);
+	player2.cells[0].replaceChildren(...kbds(p2.move ?? []), ...(p2.fire?.length ? [", fire ", ...kbds(p2.fire)] : []));
+	// the numeric keypad row: hidden when the keypad is player 2's joystick
+	document.getElementById("keys-pad").hidden = Object.keys(PAD_DIRS).some(isPlayer2);
 }
 
 // --- hint: the game ignores the keys pressed (Joust waits for START, not fire) -------------------------
@@ -167,7 +188,7 @@ function watchInputReads(m) {
 function noteKey(c) {
 	if (c in CONSOLE) { hintDone = true; hideHint(); return; }
 	if (hintDone) return;
-	const kind = isFire(c) || dirOf(c) ? "stick" : "keys", at = frameCount;
+	const kind = isFire(c) || dirOf(c) || isPlayer2(c) ? "stick" : "keys", at = frameCount;
 	hintChecks.push({ due: at + HINT_CHECK_FRAMES, kind, at });
 }
 
@@ -213,24 +234,27 @@ addEventListener("keydown", (e) => key(e, true));
 addEventListener("keyup", (e) => key(e, false));
 addEventListener("blur", releaseAll);
 
-// --- gamepad (first one): stick / d-pad, A or B = fire, Start / Back = START / SELECT ---------
+// --- gamepads: the first is joystick 1, the second joystick 2: stick / d-pad, A or B = fire; ---------
+// Start / Back on the first = START / SELECT
 function pollInput() {
-	let dir = kbDir, fire = kbFire;
-	for (const p of navigator.getGamepads?.() ?? []) {
-		if (!p) continue;
-		const b = (i) => p.buttons[i]?.pressed;
+	const sticks = [{ dir: kbDir, fire: kbFire }, { dir: kbDir2, fire: kbFire2 }];
+	const pads = [...(navigator.getGamepads?.() ?? [])].filter(Boolean);
+	pads.slice(0, 2).forEach((p, n) => {
+		const b = (i) => p.buttons[i]?.pressed, s = sticks[n];
 		const [x = 0, y = 0] = p.axes;
-		if (y < -0.5 || b(12)) dir |= 1;
-		if (y > 0.5 || b(13)) dir |= 2;
-		if (x < -0.5 || b(14)) dir |= 4;
-		if (x > 0.5 || b(15)) dir |= 8;
-		fire ||= b(0) || b(1);
+		if (y < -0.5 || b(12)) s.dir |= 1;
+		if (y > 0.5 || b(13)) s.dir |= 2;
+		if (x < -0.5 || b(14)) s.dir |= 4;
+		if (x > 0.5 || b(15)) s.dir |= 8;
+		s.fire ||= b(0) || b(1);
+		if (n) return;
 		if (!held.has("F2")) machine.console.start = !!b(9);
 		if (!held.has("F3")) machine.console.select = !!b(8);
-		break;
-	}
-	stick.direction = dir;
-	stick.trigger = fire;
+	});
+	stick.direction = sticks[0].dir;
+	stick.trigger = sticks[0].fire;
+	stick2.direction = sticks[1].dir;
+	stick2.trigger = sticks[1].fire;
 }
 
 // --- sound: per-cycle level -> box-filtered samples -> AudioWorklet ring buffer ---------------
@@ -466,6 +490,7 @@ function machineReady() {
 		const [os, basic] = await Promise.all([fetchBytes(canvas.dataset.os), fetchBytes(canvas.dataset.basic)]);
 		machine = new Atari({ xl: true, xeBankCount: 4, tvSystem: "pal", os, basic });   // 130XE: Problem Jasia needs its 128 KB
 		stick = new Joystick(machine.joysticks[0]);
+		stick2 = new Joystick(machine.joysticks[1]);
 		trapFormat(machine);
 		trapXlOs(machine);
 		trapXlDskinv(machine);

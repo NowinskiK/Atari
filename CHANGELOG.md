@@ -13,6 +13,8 @@ version heading is what the Site workflow shows in the page footer. -->
 - Raszyn 1809 in the catalog.
 - A hint on the screen when the game ignores the keys pressed: if it waits for START (like Joust and Moon Patrol,
   where the fire button does nothing on the title screen), it says to press F2. **All keys** opens the key list.
+- Joystick 2 for a second player: a second gamepad in every game, and keys set per game (`player2:` in
+  `games/<name>.yml`). In Joust, player 2 plays on the numeric keypad: 4 / 6 to fly, 0 or right Ctrl to flap.
 
 ### Fixed
 

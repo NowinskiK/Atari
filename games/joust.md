@@ -11,4 +11,14 @@ start the game. On the title screen, **SELECT** (F3) changes the difficulty and 
 Press the button again and again to flap the wings and fly up, and push the joystick left or right to fly that way
 (here: arrows, and Space or Ctrl to flap).
 
+Two players play at the same time, the second with joystick 2. Choose 2 players with OPTION (F4) on the title
+screen, then press START (F2):
+
+| | Player 1 | Player 2 |
+| --- | --- | --- |
+| fly left / right | ← → | numpad 4, 6 |
+| flap | Space, left Ctrl | numpad 0, right Ctrl |
+
+With two gamepads, the first is player 1 and the second player 2.
+
 Sources: [Wikipedia](https://en.wikipedia.org/wiki/Joust_(video_game)).
