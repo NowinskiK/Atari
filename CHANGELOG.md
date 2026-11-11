@@ -16,6 +16,7 @@ version heading is what the Site workflow shows in the page footer. -->
 
 - Games written in Atari BASIC run: the machine now has a BASIC ROM (Altirra BASIC). It is still switched off at
   power-on, but a game can switch it on. Before, such a game locked up after loading (#9).
+- Joust's About text says how to start it: START (F2), not the joystick button.
 - The line under the page title says to press **Run**, the catalog's button, not **Load**, which no longer exists.
 
 ## 1.2 - 2026-11-11

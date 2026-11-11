@@ -5,6 +5,9 @@ You are a knight riding a flying ostrich. Enemy knights on buzzards fly around t
 when two riders collide, the one whose lance is higher wins. A beaten enemy leaves an egg – collect it before it
 hatches into a new rider. Watch out for the lava, and for the pterodactyl that turns up when you take too long.
 
+After loading, the game shows its demonstration. Press **START** (here: F2) to play; the joystick button does not
+start the game. On the title screen, **SELECT** (F3) changes the difficulty and **OPTION** (F4) the number of players.
+
 Press the button again and again to flap the wings and fly up, and push the joystick left or right to fly that way
 (here: arrows, and Space or Ctrl to flap).
 
